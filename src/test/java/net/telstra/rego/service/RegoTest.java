@@ -96,8 +96,8 @@ public class RegoTest {
 		assertEquals("should not find one car", null, car);
 	}
 	
-	// @Test // do not enable this test. It will cause the test case fail. 
-	// Because the method removes all the entities in the table. 
+	// @Test // do not enable this test. It will cause other test cases fail. 
+	// Because the method removes all the entities in the map. 
 	// Until add the test order; it should be the last one. 
 	public void destroyTest() {
 		
