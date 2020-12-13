@@ -31,8 +31,6 @@ public class Rego {
 		regoMap = new ConcurrentHashMap<String, String>(initialCapacity, loadFactor, concurrencyLevel); 
 		carMap = new ConcurrentHashMap<String, Car>(initialCapacity, loadFactor, concurrencyLevel); 
 		init();
-		System.err.println("Rego size : " + regoMap.size());
-		System.err.println("Car size : " + carMap.size());
 	}
 	
 	// entry point to get this singleton instance.

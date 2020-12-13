@@ -4,12 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeNotNull;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import net.telstra.rego.entity.Car;
-import net.telstra.rego.service.Rego;
 
 public class RegoTest {
 	
@@ -18,6 +16,13 @@ public class RegoTest {
 	@BeforeClass
 	public static void init() {
 		rego = Rego.getInstance();
+	}
+	
+	@Test
+	public void singleInstanceTest() {
+		Rego rego1 = Rego.getInstance();
+		Rego rego2 = Rego.getInstance();
+		assertEquals("get two different instances. ", rego1, rego2);
 	}
 	
 	@Test
@@ -33,7 +38,18 @@ public class RegoTest {
 	@Test
 	public void get2Test() {
 		Car car = rego.get("abc"); 
-		Assert.assertNull(car);
+		assertEquals("should not find one car", null, car);
+	}
+	
+	@Test
+	public void getByCarIdTest() {
+		
+		Car car = rego.getByCarId("2"); 
+		assumeNotNull(car);
+		assertEquals("car id is not equal.", "2", car.getId() );
+		assertEquals("make is not equal", "Volkswagen", car.getMake()); 
+		assertEquals("model is not equal", "Passat", car.getModel()); 
+		assertEquals("year is not equal", 2012, car.getYear()); 
 	}
 	
 	@Test
@@ -56,8 +72,8 @@ public class RegoTest {
 	
 	@Test
 	public void register2Test() {
-		String registrationId = "NNN123"; 
-		String carId = "5076"; 
+		String registrationId = "kkk123"; 
+		String carId = "5006"; 
 		rego.register(registrationId, carId);
 		Car c1 = rego.get(registrationId); 
 		Car c2 = rego.getByCarId(carId); 
@@ -67,5 +83,33 @@ public class RegoTest {
 		assertEquals("year is not equal", c2.getYear(), c1.getYear()); 
 	}
 	
+	@Test
+	public void removeTest() {
+		String registrationId = "NNN123"; 
+		String carId = "5076"; 
+		boolean result = rego.register(registrationId, carId);
+		assertTrue("cannot register a car. ", result);
+		
+		rego.remove(registrationId); 
+		
+		Car car = rego.get(registrationId); 
+		assertEquals("should not find one car", null, car);
+	}
 	
+	// @Test // do not enable this test. It will cause the test case fail. 
+	// Because the method removes all the entities in the table. 
+	// Until add the test order; it should be the last one. 
+	public void destroyTest() {
+		
+		String registrationId = "NNN123"; 
+		String carId = "5076"; 
+		boolean result = rego.register(registrationId, carId);
+		assertTrue("cannot register a car. ", result);
+		
+		rego.destroy(); 
+		
+		Car car = rego.get(registrationId); 
+		assertEquals("should not find one car", null, car);
+		
+	}
 }
